@@ -25,6 +25,10 @@
                 @endif
             </div>
         </div>
+        <div class="card">
+            <div class="card-title">My Notes</div>
+            <div class="card-value">{{ \App\Models\Note::where('user_id', Auth::id())->count() }}</div>
+        </div>
         <!-- Add more summary cards here -->
     </div>
 
