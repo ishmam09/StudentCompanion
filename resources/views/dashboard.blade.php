@@ -21,7 +21,7 @@
                 @if(Auth::user()->role === 'student' && Auth::user()->student->cgpa)
                     {{ Auth::user()->student->cgpa }}
                 @else
-                    -
+                    <?php echo $CGPA; ?>
                 @endif
             </div>
         </div>

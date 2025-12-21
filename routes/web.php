@@ -46,4 +46,5 @@ Route::middleware('auth')->group(function () {
 
     // Notification Routes
     Route::get('/notifications/mark-all-read', [\App\Http\Controllers\NotificationController::class, 'markAllRead'])->name('notifications.mark-all-read');
+
 });
