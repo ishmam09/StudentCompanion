@@ -51,7 +51,7 @@
                         </div>
                         <div style="max-height: 300px; overflow-y: auto;">
                             @forelse(Auth::user()->unreadNotifications as $notification)
-                                <a href="{{ $notification->data['url'] ?? '#' }}" class="notification-item" style="display: flex; gap: 0.75rem; padding: 1rem; border-bottom: 1px solid var(--border-color); text-decoration: none; align-items: start; transition: background 0.2s;">
+                                <a href="{{ route('notifications.read', $notification->id) }}" class="notification-item" style="display: flex; gap: 0.75rem; padding: 1rem; border-bottom: 1px solid var(--border-color); text-decoration: none; align-items: start; transition: background 0.2s;">
                                     <div style="background: var(--background); padding: 0.5rem; border-radius: 8px; font-size: 1.25rem;">
                                         {{ $notification->data['icon'] ?? '📢' }}
                                     </div>
@@ -111,7 +111,7 @@
                 </a>
                 <!-- Future items will go here -->
                 <a href="#" class="nav-item">Class Routine</a>
-                <a href="#" class="nav-item">Deadline Tracker</a>
+                <a href="{{ route('deadlines.index') }}" class="nav-item {{ request()->routeIs('deadlines.*') ? 'active' : '' }}">Deadline Tracker</a>
                 <a href="#" class="nav-item">Smart Notifications</a>
             </nav>
         </aside>
