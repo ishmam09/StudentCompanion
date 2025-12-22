@@ -46,5 +46,9 @@ Route::middleware('auth')->group(function () {
 
     // Notification Routes
     Route::get('/notifications/mark-all-read', [\App\Http\Controllers\NotificationController::class, 'markAllRead'])->name('notifications.mark-all-read');
+    Route::get('/notifications/{id}/read', [\App\Http\Controllers\NotificationController::class, 'read'])->name('notifications.read');
 
+    // Deadline Routes
+    Route::resource('deadlines', \App\Http\Controllers\DeadlineController::class);
+    Route::patch('/deadlines/{deadline}/toggle', [\App\Http\Controllers\DeadlineController::class, 'toggleStatus'])->name('deadlines.toggle');
 });

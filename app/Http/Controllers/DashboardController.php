@@ -3,20 +3,26 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use App\Models\Courses;
+use App\Models\Deadline;
 
 class DashboardController extends Controller
 {
     public function index()
     {
-        $courses = Courses::whereNotNull('grade')->get();
+        $user = Auth::user();
+        
+        // Calculate pending tasks and upcoming deadlines
+        $pendingTasksCount = $user->deadlines()
+            ->where('status', 'pending')
+            ->count();
+            
+        $upcomingDeadlinesCount = $user->deadlines()
+            ->where('status', 'pending')
+            ->where('due_date', '>', now())
+            ->count();
 
-        $totalCredits = $courses->sum('credit');
-
-        $cgpa = $totalCredits > 0
-            ? $courses->sum(fn ($c) => $c->credit * $c->grade) / $totalCredits
-           : 0;
-         
-        return view('dashboard',['CGPA' => round($cgpa,2)]);
+        return view('dashboard', compact('pendingTasksCount', 'upcomingDeadlinesCount'));
     }
 }
