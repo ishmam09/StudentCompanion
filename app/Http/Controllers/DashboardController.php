@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Deadline;
+use App\Models\VirtualClassroom;
 
 class DashboardController extends Controller
 {
@@ -20,7 +22,18 @@ class DashboardController extends Controller
             ->where('status', 'pending')
             ->where('due_date', '<=', now()->addHours(24))
             ->count();
+        
 
-        return view('dashboard', compact('pendingTasksCount', 'upcomingDeadlinesCount'));
+        $activeClasses = VirtualClassroom::where('is_active', true)
+            ->with('teacher')
+            ->get();
+
+        // Updated compact to include 'activeClasses'
+        return view('dashboard', compact(
+            'pendingTasksCount', 
+            'upcomingDeadlinesCount', 
+            'activeClasses'
+        ));
+        
     }
 }

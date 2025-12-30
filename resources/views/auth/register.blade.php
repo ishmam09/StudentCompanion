@@ -44,6 +44,14 @@
                 @csrf
                 
                 <div class="form-group">
+                    <label class="form-label" for="role">I am a...</label>
+                    <select id="role" name="role" class="form-input" onchange="updateForm()">
+                        <option value="student">Student</option>
+                        <option value="teacher">Teacher</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
                     <label class="form-label" for="name">Full Name</label>
                     <input type="text" id="name" name="name" class="form-input" required value="{{ old('name') }}">
                     @error('name') <div class="error-message">{{ $message }}</div> @enderror
@@ -56,19 +64,11 @@
                 </div>
 
                 <div class="form-group">
-                    <label class="form-label" for="username">Username</label>
+                    <label class="form-label" id="username-label" for="username">Username</label>
                     <input type="text" id="username" name="username" class="form-input" value="{{ old('username') }}">
                     <div id="username-error" class="username-feedback" style="color: #ef4444;">Username already taken</div>
                     <div id="username-success" class="username-feedback" style="color: #059669;">Username available</div>
                     @error('username') <div class="error-message">{{ $message }}</div> @enderror
-                </div>
-
-                <div class="form-group">
-                    <label class="form-label" for="role">I am a...</label>
-                    <select id="role" name="role" class="form-input" onchange="updateForm()">
-                        <option value="student">Student</option>
-                        <option value="teacher">Teacher</option>
-                    </select>
                 </div>
 
                 <div class="form-group">
@@ -146,13 +146,21 @@
             const role = document.getElementById('role').value;
             const idLabel = document.getElementById('id-label');
             const enrollmentGroup = document.getElementById('enrollment-group');
+            const usernameLabel = document.getElementById('username-label');
+            const usernameInput = document.getElementById('username');
             
             if (role === 'student') {
                 idLabel.innerText = 'Student ID';
                 enrollmentGroup.style.display = 'block';
+                usernameLabel.innerText = 'Username';
+                usernameInput.placeholder = 'e.g. john_doe';
+                usernameInput.removeAttribute('maxlength');
             } else {
                 idLabel.innerText = 'Teacher ID';
                 enrollmentGroup.style.display = 'none';
+                usernameLabel.innerText = 'Teacher Initial';
+                usernameInput.placeholder = 'e.g. ROKS (Max 4)';
+                usernameInput.setAttribute('maxlength', '4');
             }
         }
 

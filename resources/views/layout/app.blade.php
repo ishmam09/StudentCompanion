@@ -51,15 +51,34 @@
                         </div>
                         <div style="max-height: 300px; overflow-y: auto;">
                             @forelse(Auth::user()->unreadNotifications as $notification)
-                                <a href="{{ route('notifications.read', $notification->id) }}" class="notification-item" style="display: flex; gap: 0.75rem; padding: 1rem; border-bottom: 1px solid var(--border-color); text-decoration: none; align-items: start; transition: background 0.2s;">
+                                <div class="notification-item" style="display: flex; gap: 0.75rem; padding: 1rem; border-bottom: 1px solid var(--border-color); align-items: start; transition: background 0.2s;">
                                     <div style="background: var(--background); padding: 0.5rem; border-radius: 8px; font-size: 1.25rem;">
                                         {{ $notification->data['icon'] ?? '📢' }}
                                     </div>
-                                    <div>
+                                    <div style="flex: 1;">
                                         <div style="font-size: 0.85rem; color: var(--primary-color); line-height: 1.4;">{{ $notification->data['message'] }}</div>
                                         <div style="font-size: 0.7rem; color: var(--text-secondary); margin-top: 0.25rem;">{{ $notification->created_at->diffForHumans() }}</div>
+                                        
+                                        @if(isset($notification->data['type']) && $notification->data['type'] === 'consultation_request')
+                                            @php
+                                                $consultation = \App\Models\Consultation::find($notification->data['consultation_id'] ?? null);
+                                            @endphp
+                                            
+                                            @if($consultation && $consultation->status === 'pending')
+                                                <div style="display: flex; gap: 0.5rem; margin-top: 0.5rem;">
+                                                    <a href="{{ $notification->data['action_url_accept'] }}" style="padding: 0.25rem 0.75rem; background: #dcfce7; color: #166534; border-radius: 4px; font-size: 0.75rem; font-weight: 600; text-decoration: none;">Accept</a>
+                                                    <a href="{{ $notification->data['action_url_reject'] }}" style="padding: 0.25rem 0.75rem; background: #fee2e2; color: #991b1b; border-radius: 4px; font-size: 0.75rem; font-weight: 600; text-decoration: none;">Reject</a>
+                                                </div>
+                                            @elseif($consultation && $consultation->status === 'approved')
+                                                <div style="margin-top: 0.25rem; font-size: 0.75rem; color: #15803d; font-weight: 600;">✓ Accepted</div>
+                                            @elseif($consultation && $consultation->status === 'rejected')
+                                                 <div style="margin-top: 0.25rem; font-size: 0.75rem; color: #b91c1c; font-weight: 600;">✕ Rejected</div>
+                                            @endif
+                                        @else
+                                            <a href="{{ route('notifications.read', $notification->id) }}" style="display: block; margin-top: 0.25rem; font-size: 0.75rem; color: var(--accent-color); text-decoration: none;">View Details</a>
+                                        @endif
                                     </div>
-                                </a>
+                                </div>
                             @empty
                                 <div style="padding: 1.5rem; text-align: center; color: var(--text-secondary); font-size: 0.9rem;">
                                     No new notifications
@@ -106,13 +125,26 @@
                 <a href="{{ route('profile.show') }}" class="nav-item {{ request()->routeIs('profile.show') ? 'active' : '' }}">
                     Profile Management
                 </a>
+                @if(Auth::user()->role === 'student')
                 <a href="{{ route('notes.index') }}" class="nav-item {{ request()->routeIs('notes.*') ? 'active' : '' }}">
                    My Notes
                 </a>
+                @endif
                 <!-- Future items will go here -->
                 <a href="#" class="nav-item">Class Routine</a>
+                @if(Auth::user()->role === 'student')
                 <a href="{{ route('deadlines.index') }}" class="nav-item {{ request()->routeIs('deadlines.*') ? 'active' : '' }}">Deadline Tracker</a>
-                <a href="#" class="nav-item">Smart Notifications</a>
+                @endif
+                <a href="{{ route('todo.index') }}" class="nav-item {{ request()->routeIs('todo.*') ? 'active-yellow' : '' }}">
+                Your To Do List
+                </a>
+
+                @if(Auth::user()->role === 'student')
+                <a href="{{ route('consultations.index') }}" class="nav-item {{ request()->routeIs('consultations.*') ? 'active-yellow' : '' }}">
+                    Consultation Scheduler
+                </a>
+                @endif
+                <a href="{{ route('notifications.index') }}" class="nav-item {{ request()->routeIs('notifications.*') ? 'active-yellow' : '' }}">Smart Notifications</a>
             </nav>
         </aside>
 

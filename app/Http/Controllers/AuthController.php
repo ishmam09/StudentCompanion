@@ -51,15 +51,27 @@ class AuthController extends Controller
 
     public function register(Request $request)
     {
-        $validated = $request->validate([
+        $rules = [
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
-            'username' => 'nullable|string|max:255|unique:users',
             'password' => ['required', 'confirmed', Password::min(8)->mixedCase()->numbers()->symbols()],
             'role' => 'required|in:student,teacher',
-            'id_number' => 'required|string', // Student ID or Teacher ID
+            'id_number' => 'required|string',
             'enrollment_year' => 'nullable|required_if:role,student|integer',
-        ]);
+        ];
+
+        if ($request->role === 'teacher') {
+            $rules['username'] = 'required|string|max:4|unique:users,username';
+        } else {
+            $rules['username'] = 'nullable|string|max:255|unique:users,username';
+        }
+
+        $messages = [
+            'username.max' => 'Teacher Initial must be at most 4 characters.',
+            'username.unique' => $request->role === 'teacher' ? 'Initial already taken.' : 'Username already taken.',
+        ];
+
+        $validated = $request->validate($rules, $messages);
 
         // Generate OTP
         $otp = rand(100000, 999999);

@@ -4,6 +4,9 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\TaskController;
+use App\Http\Controllers\ConsultationController;
+use App\Http\Controllers\ClassroomController;
 
 Route::get('/', function () {
     return redirect()->route('login');
@@ -45,10 +48,43 @@ Route::middleware('auth')->group(function () {
     Route::get('/notes/shared/from/{userId}', [\App\Http\Controllers\NoteController::class, 'sharedBy'])->name('notes.shared.by');
 
     // Notification Routes
+    Route::get('/notifications', [\App\Http\Controllers\NotificationController::class, 'index'])->name('notifications.index');
     Route::get('/notifications/mark-all-read', [\App\Http\Controllers\NotificationController::class, 'markAllRead'])->name('notifications.mark-all-read');
     Route::get('/notifications/{id}/read', [\App\Http\Controllers\NotificationController::class, 'read'])->name('notifications.read');
 
     // Deadline Routes
     Route::resource('deadlines', \App\Http\Controllers\DeadlineController::class);
     Route::patch('/deadlines/{deadline}/toggle', [\App\Http\Controllers\DeadlineController::class, 'toggleStatus'])->name('deadlines.toggle');
+});
+
+//TO-DO Routes
+
+Route::middleware(['auth'])->group(function () {
+    Route::get('/todo-list', [TaskController::class, 'index'])->name('todo.index');
+    Route::post('/todo-list', [TaskController::class, 'store'])->name('todo.store');
+    Route::delete('/todo-list/{task}', [TaskController::class, 'destroy'])->name('todo.destroy');
+});
+
+//Consultation Routes
+Route::middleware(['auth'])->group(function () {
+    Route::get('/consultations', [ConsultationController::class, 'index'])->name('consultations.index');
+    Route::post('/consultations', [ConsultationController::class, 'store'])->name('consultations.store');
+    Route::get('/consultations/{id}/status/{status}', [ConsultationController::class, 'updateStatus'])->name('consultations.status');
+});
+
+Route::middleware(['auth'])->group(function () {
+    Route::post('/classroom/create', [ClassroomController::class, 'store'])->name('classroom.store');
+    Route::post('/classroom/join-code', [ClassroomController::class, 'joinByCode'])->name('classroom.join_code');
+    Route::get('/classroom/join/{roomId}', [ClassroomController::class, 'join'])->name('classroom.join');
+    Route::get('/classroom/end/{roomId}', [ClassroomController::class, 'end'])->name('classroom.end');
+    Route::post('/classroom/leave/{roomId}', [ClassroomController::class, 'leave'])->name('classroom.leave');
+    Route::delete('/classroom/{id}', [ClassroomController::class, 'destroy'])->name('classroom.destroy');
+    
+    // Chat Routes
+    Route::get('/classroom/{classId}/messages', [ClassroomController::class, 'getMessages']);
+    Route::post('/classroom/message', [ClassroomController::class, 'sendMessage']);
+
+    // Post Routes
+    Route::get('/classroom/{classId}/posts', [ClassroomController::class, 'getPosts']);
+    Route::post('/classroom/posts', [ClassroomController::class, 'storePost']);
 });

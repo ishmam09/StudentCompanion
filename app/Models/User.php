@@ -6,6 +6,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use App\Models\Task;
 
 class User extends Authenticatable
 {
@@ -66,4 +67,28 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+        
+    public function tasks()
+    {
+      
+        return $this->hasMany(\App\Models\Task::class);
+    }
+    
+    public function consultations()
+    {
+
+        return $this->hasMany(\App\Models\Consultation::class);
+    }
+
+    public function classrooms()
+    {
+        return $this->hasMany(VirtualClassroom::class, 'teacher_id');
+    }
+
+    public function enrolledClassrooms()
+    {
+        return $this->belongsToMany(VirtualClassroom::class, 'classroom_user', 'user_id', 'virtual_classroom_id');
+    }
+    
 }
