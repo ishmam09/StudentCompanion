@@ -131,7 +131,9 @@
                 </a>
                 @endif
                 <!-- Future items will go here -->
-                <a href="#" class="nav-item">Class Routine</a>
+                <a href="{{ route('class-routines.index') }}" class="nav-item {{ request()->routeIs('class-routines.*') ? 'active-yellow' : '' }}">
+                    Class Routine
+                </a>
                 @if(Auth::user()->role === 'student')
                 <a href="{{ route('deadlines.index') }}" class="nav-item {{ request()->routeIs('deadlines.*') ? 'active' : '' }}">Deadline Tracker</a>
                 @endif
@@ -143,7 +145,13 @@
                 <a href="{{ route('consultations.index') }}" class="nav-item {{ request()->routeIs('consultations.*') ? 'active-yellow' : '' }}">
                     Consultation Scheduler
                 </a>
+                <a href="{{ route('pomodoro.index') }}" class="nav-item {{ request()->routeIs('pomodoro.*') ? 'active-yellow' : '' }}">
+                    Focus Timer
+                </a>
                 @endif
+                <a href="{{ route('marketplace.index') }}" class="nav-item {{ request()->routeIs('marketplace.*') ? 'active-yellow' : '' }}">
+                    Marketplace
+                </a>
                 <a href="{{ route('notifications.index') }}" class="nav-item {{ request()->routeIs('notifications.*') ? 'active-yellow' : '' }}">Smart Notifications</a>
             </nav>
         </aside>

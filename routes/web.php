@@ -7,6 +7,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TaskController;
 use App\Http\Controllers\ConsultationController;
 use App\Http\Controllers\ClassroomController;
+use App\Http\Controllers\MarketplaceController;
 
 Route::get('/', function () {
     return redirect()->route('login');
@@ -70,6 +71,21 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/consultations', [ConsultationController::class, 'index'])->name('consultations.index');
     Route::post('/consultations', [ConsultationController::class, 'store'])->name('consultations.store');
     Route::get('/consultations/{id}/status/{status}', [ConsultationController::class, 'updateStatus'])->name('consultations.status');
+});
+
+// Class Routine Routes
+Route::middleware(['auth'])->group(function () {
+    Route::resource('class-routines', \App\Http\Controllers\ClassRoutineController::class);
+    Route::get('/focus-timer', [\App\Http\Controllers\PomodoroController::class, 'index'])->name('pomodoro.index');
+    
+    // Marketplace
+    Route::get('/marketplace', [MarketplaceController::class, 'index'])->name('marketplace.index');
+    Route::get('/marketplace/create', [MarketplaceController::class, 'create'])->name('marketplace.create');
+    Route::post('/marketplace', [MarketplaceController::class, 'store'])->name('marketplace.store');
+    Route::post('/marketplace/buy/{id}', [MarketplaceController::class, 'buy'])->name('marketplace.buy');
+    Route::get('/marketplace/history', [MarketplaceController::class, 'history'])->name('marketplace.history');
+    Route::delete('/marketplace/{id}', [MarketplaceController::class, 'destroy'])->name('marketplace.destroy');
+    Route::post('/marketplace/transaction/{id}/undo', [MarketplaceController::class, 'undoPurchase'])->name('marketplace.undo');
 });
 
 Route::middleware(['auth'])->group(function () {
