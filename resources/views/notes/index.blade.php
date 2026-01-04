@@ -120,9 +120,9 @@
                                     <button onclick="openShareModal('{{ $note->id }}')" class="btn-icon" style="background: #F0FDF4; color: #15803D;" title="Share">
                                         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
                                     </button>
-                                    <a href="#" class="btn" style="padding: 0.5rem 1rem; background: linear-gradient(135deg, #E0F2FE, #BAE6FD); color: #0284C7; border: none; font-weight: 600; font-size: 0.85rem; display: flex; align-items: center; gap: 0.5rem;">
+                                    <a href="{{ route('quiz.generate', $note->id) }}" class="btn" style="padding: 0.5rem 1rem; background: linear-gradient(135deg, #E0F2FE, #BAE6FD); color: #0284C7; border: none; font-weight: 600; font-size: 0.85rem; display: flex; align-items: center; gap: 0.5rem;">
                                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
-                                        Quiz
+                                        AI Quiz
                                     </a>
                                     <a href="{{ route('notes.download', $note->id) }}" class="btn-icon" style="background: var(--background); color: var(--primary-color);" title="Download">
                                         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>

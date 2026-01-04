@@ -43,6 +43,12 @@ Route::middleware('auth')->group(function () {
     Route::delete('/notes/folder/{folder}', [\App\Http\Controllers\NoteController::class, 'destroyFolder'])->name('notes.destroy-folder');
     Route::delete('/notes/note/{note}', [\App\Http\Controllers\NoteController::class, 'destroyNote'])->name('notes.destroy-note');
 
+    // Quiz Routes
+    Route::get('/notes/{note}/quiz/generate', [\App\Http\Controllers\QuizController::class, 'generate'])->name('quiz.generate');
+    Route::get('/quiz/{quiz}', [\App\Http\Controllers\QuizController::class, 'show'])->name('quiz.show');
+    Route::post('/quiz/{quiz}', [\App\Http\Controllers\QuizController::class, 'submit'])->name('quiz.submit');
+    Route::get('/quiz/{quiz}/result', [\App\Http\Controllers\QuizController::class, 'result'])->name('quiz.result');
+
     // Shared Notes Routes
     Route::post('/notes/share/{note}', [\App\Http\Controllers\NoteController::class, 'shareNote'])->name('notes.share');
     Route::get('/notes/shared/inbox', [\App\Http\Controllers\NoteController::class, 'sharedIndex'])->name('notes.shared.index');
