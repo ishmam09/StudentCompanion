@@ -4,7 +4,7 @@
     <div style="max-width: 1200px; margin: 0 auto;">
         
         <!-- Welcome Hero -->
-        <div style="background: linear-gradient(135deg, var(--primary-color), var(--primary-light)); color: white; padding: 3rem; border-radius: var(--radius-lg); margin-bottom: 3rem; position: relative; overflow: hidden; box-shadow: var(--shadow-card);">
+        <div class="welcome-card">
             <!-- Decorative circle -->
             <div style="position: absolute; top: -50px; right: -50px; width: 200px; height: 200px; border-radius: 50%; background: radial-gradient(circle, rgba(212, 175, 55, 0.2) 0%, transparent 70%);"></div>
             
@@ -21,6 +21,7 @@
                     <a href="{{ route('notes.index') }}" class="btn" style="background: rgba(255,255,255,0.1); color: white; backdrop-filter: blur(5px);">
                         View Notes
                     </a>
+
                 </div>
             </div>
         </div>

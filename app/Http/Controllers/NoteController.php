@@ -15,7 +15,7 @@ class NoteController extends Controller
     public function index($folderId = null)
     {
         $user = Auth::user();
-        
+
         $currentFolder = null;
         if ($folderId) {
             $currentFolder = Folder::where('id', $folderId)->where('user_id', $user->id)->firstOrFail();
@@ -37,6 +37,24 @@ class NoteController extends Controller
         }
 
         return view('notes.index', compact('folders', 'notes', 'currentFolder', 'breadcrumbs'));
+    }
+
+    public function createFolder(Request $request)
+    {
+        $folderId = $request->query('folder_id'); // Just passed as query param
+        return view('notes.create-folder', compact('folderId'));
+    }
+
+    public function upload(Request $request)
+    {
+        $folderId = $request->query('folder_id');
+        return view('notes.upload', compact('folderId'));
+    }
+
+    public function share(\App\Models\Note $note)
+    {
+        $this->authorize('view', $note); // Ensure ownership/access
+        return view('notes.share', compact('note'));
     }
 
     public function storeFolder(Request $request)
@@ -65,13 +83,13 @@ class NoteController extends Controller
         $file = $request->file('file');
         $originalName = $file->getClientOriginalName();
         $extension = $file->getClientOriginalExtension();
-        
+
         // Store in nice structure: notes/user_id/folder_id/filename
         $folderPath = 'notes/' . Auth::id();
         if ($request->folder_id) {
             $folderPath .= '/' . $request->folder_id;
         }
-        
+
         $path = $file->storeAs($folderPath, $originalName . '_' . time() . '.' . $extension, 'public');
 
         Note::create([
@@ -94,8 +112,8 @@ class NoteController extends Controller
 
         // Check if shared with me
         $isShared = NoteShare::where('note_id', $note->id)
-                             ->where('to_user_id', Auth::id())
-                             ->exists();
+            ->where('to_user_id', Auth::id())
+            ->exists();
 
         if ($isShared) {
             return Storage::disk('public')->download($note->file_path, $note->title);
@@ -103,10 +121,10 @@ class NoteController extends Controller
 
         abort(403);
     }
-    
+
     public function destroyFolder(Folder $folder)
     {
-         if ($folder->user_id !== Auth::id()) {
+        if ($folder->user_id !== Auth::id()) {
             abort(403);
         }
         // Logic to delete files physically would go here, omitting for brevity/mvp (files stay orphaned in storage but DB cleaned via cascade)
@@ -116,7 +134,7 @@ class NoteController extends Controller
 
     public function destroyNote(Note $note)
     {
-         if ($note->user_id !== Auth::id()) {
+        if ($note->user_id !== Auth::id()) {
             abort(403);
         }
         Storage::disk('public')->delete($note->file_path);
@@ -133,20 +151,20 @@ class NoteController extends Controller
         $request->validate(['username' => 'required']);
 
         $recipient = User::where('username', $request->username)->first();
-        
+
         if (!$recipient) {
             return back()->with('error', 'User with username "' . $request->username . '" does not exist.');
         }
 
         if ($recipient->id === Auth::id()) {
-             return back()->with('error', 'You cannot share notes with yourself.');
+            return back()->with('error', 'You cannot share notes with yourself.');
         }
 
         // Check if already shared
         $exists = NoteShare::where('note_id', $note->id)
-                           ->where('to_user_id', $recipient->id)
-                           ->exists();
-        
+            ->where('to_user_id', $recipient->id)
+            ->exists();
+
         if ($exists) {
             return back()->with('error', 'Already shared with this user.');
         }
@@ -166,9 +184,9 @@ class NoteController extends Controller
     {
         // Get all unique users who have shared notes with me
         $senderIds = NoteShare::where('to_user_id', Auth::id())
-                              ->distinct()
-                              ->pluck('from_user_id');
-        
+            ->distinct()
+            ->pluck('from_user_id');
+
         $senders = User::whereIn('id', $senderIds)->get();
 
         return view('notes.shared_index', compact('senders'));
@@ -177,13 +195,13 @@ class NoteController extends Controller
     public function sharedBy($userId)
     {
         $sender = User::findOrFail($userId);
-        
+
         // Get notes shared by this user to me
         $shares = NoteShare::where('from_user_id', $userId)
-                           ->where('to_user_id', Auth::id())
-                           ->with('note')
-                           ->get();
-        
+            ->where('to_user_id', Auth::id())
+            ->with('note')
+            ->get();
+
         $notes = $shares->pluck('note');
 
         return view('notes.shared_by', compact('sender', 'notes'));

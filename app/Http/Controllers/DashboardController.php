@@ -11,11 +11,11 @@ class DashboardController extends Controller
     public function index()
     {
         $user = Auth::user();
-        
+
         $pendingTasksCount = $user->deadlines()
             ->where('status', 'pending')
             ->count();
-            
+
         $upcomingDeadlinesCount = $user->deadlines()
             ->where('status', 'pending')
             ->where('due_date', '<=', now()->addHours(24))
