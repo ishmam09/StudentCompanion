@@ -1,0 +1,155 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\Transaction;
+use App\Models\Category;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
+
+class TransactionController extends Controller
+{
+    public function index(Request $request)
+    {
+        $query = auth()->user()->transactions()
+            ->with('category')
+            ->latest('transaction_date');
+
+        // Filter by type
+        if ($request->has('type')) {
+            $query->where('type', $request->type);
+        }
+
+        // Filter by category
+        if ($request->has('category_id')) {
+            $query->where('category_id', $request->category_id);
+        }
+
+        // Filter by date range
+        if ($request->has('start_date')) {
+            $query->where('transaction_date', '>=', $request->start_date);
+        }
+        if ($request->has('end_date')) {
+            $query->where('transaction_date', '<=', $request->end_date);
+        }
+
+        $transactions = $query->paginate(20);
+        $categories = auth()->user()->categories;
+
+        return view('transactions.index', compact('transactions', 'categories'));
+    }
+
+    public function create()
+    {
+        $categories = auth()->user()->categories;
+        return view('transactions.create', compact('categories'));
+    }
+
+    public function store(Request $request)
+    {
+        $validated = $request->validate([
+            'description' => 'required|string|max:255',
+            'amount' => 'required|numeric|min:0.01',
+            'type' => 'required|in:expense,income',
+            'category_id' => 'nullable|exists:categories,id',
+            'transaction_date' => 'required|date',
+            'notes' => 'nullable|string',
+            'is_recurring' => 'boolean',
+            'recurring_frequency' => 'nullable|in:daily,weekly,monthly,yearly'
+        ]);
+
+        $validated['user_id'] = auth()->id();
+
+        $transaction = Transaction::create($validated);
+
+        return redirect()->route('transactions.index')
+            ->with('success', 'Transaction added successfully!');
+    }
+
+    public function edit(Transaction $transaction)
+    {
+        $this->authorize('update', $transaction);
+        $categories = auth()->user()->categories;
+        return view('transactions.edit', compact('transaction', 'categories'));
+    }
+
+    public function update(Request $request, Transaction $transaction)
+    {
+        $this->authorize('update', $transaction);
+
+        $validated = $request->validate([
+            'description' => 'required|string|max:255',
+            'amount' => 'required|numeric|min:0.01',
+            'type' => 'required|in:expense,income',
+            'category_id' => 'nullable|exists:categories,id',
+            'transaction_date' => 'required|date',
+            'notes' => 'nullable|string',
+            'is_recurring' => 'boolean',
+            'recurring_frequency' => 'nullable|in:daily,weekly,monthly,yearly'
+        ]);
+
+        $transaction->update($validated);
+
+        return redirect()->route('transactions.index')
+            ->with('success', 'Transaction updated successfully!');
+    }
+
+    public function destroy(Transaction $transaction)
+    {
+        $this->authorize('delete', $transaction);
+        $transaction->delete();
+
+        return redirect()->route('transactions.index')
+            ->with('success', 'Transaction deleted successfully!');
+    }
+
+    public function dashboard()
+    {
+        $user = auth()->user();
+        $currentMonth = now()->month;
+        $currentYear = now()->year;
+
+        // Monthly summary
+        $monthlyExpenses = $user->transactions()
+            ->expenses()
+            ->forMonth($currentYear, $currentMonth)
+            ->sum('amount');
+
+        $monthlyIncome = $user->transactions()
+            ->income()
+            ->forMonth($currentYear, $currentMonth)
+            ->sum('amount');
+
+        // Spending by category
+        $spendingByCategory = $user->transactions()
+            ->expenses()
+            ->forMonth($currentYear, $currentMonth)
+            ->join('categories', 'transactions.category_id', '=', 'categories.id')
+            ->select('categories.name', DB::raw('SUM(transactions.amount) as total'))
+            ->groupBy('categories.id', 'categories.name')
+            ->orderByDesc('total')
+            ->get();
+
+        // Recent transactions
+        $recentTransactions = $user->transactions()
+            ->with('category')
+            ->latest('transaction_date')
+            ->take(10)
+            ->get();
+
+        // Budget status
+        $budgets = $user->budgets()
+            ->where('is_active', true)
+            ->with('category')
+            ->get();
+
+        return view('dashboard', compact(
+            'monthlyExpenses',
+            'monthlyIncome',
+            'spendingByCategory',
+            'recentTransactions',
+            'budgets'
+        ));
+    }
+}

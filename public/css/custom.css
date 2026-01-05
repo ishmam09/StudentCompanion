@@ -32,6 +32,103 @@
     /* Elegant heading font */
     --font-body: 'Plus Jakarta Sans', sans-serif;
     /* Modern clean body font */
+
+    /* Hero Gradient Colors (Fixed for brand identity) */
+    --hero-gradient-start: #0F172A;
+    --hero-gradient-end: #1E293B;
+}
+
+
+/* Dark Mode Overrides */
+.dark-mode {
+    --primary-color: #F8FAFC;
+    /* Swap primary with background-ish */
+    --primary-light: #E2E8F0;
+
+    --background: #0F172A;
+    /* Dark background */
+    --surface: #1E293B;
+    /* Slightly lighter dark for cards */
+
+    --text-primary: #F8FAFC;
+    --text-secondary: #94A3B8;
+    --text-on-primary: #0F172A;
+    /* Text on the now-light sidebar needs to be dark */
+
+    --border-color: #334155;
+
+    --shadow-soft: 0 4px 20px -2px rgba(0, 0, 0, 0.5);
+    --shadow-card: 0 10px 15px -3px rgba(0, 0, 0, 0.5), 0 4px 6px -4px rgba(0, 0, 0, 0.4);
+}
+
+/* Fix specific elements for dark mode to keep them looking good */
+/* Fix specific elements for dark mode to keep them looking good */
+.dark-mode .sidebar {
+    background-color: #1E293B;
+    /* Keep sidebar dark-ish but distinct? Or matches surface? */
+    color: #F8FAFC;
+    border-right: 1px solid var(--border-color);
+}
+
+.dark-mode .top-navbar {
+    background-color: #1E293B;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.dark-mode .nav-item {
+    color: #CBD5E1;
+}
+
+.dark-mode .nav-item:hover,
+.dark-mode .nav-item.active {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: #F8FAFC;
+}
+
+.dark-mode .nav-item.active {
+    background-color: var(--accent-color);
+    color: #0F172A;
+    /* Dark text on gold */
+}
+
+.dark-mode .brand span,
+.dark-mode .brand-logo span {
+    color: var(--accent-color);
+}
+
+.dark-mode .brand,
+.dark-mode .brand-logo {
+    color: #F8FAFC;
+}
+
+.dark-mode .sidebar-toggle {
+    color: #F8FAFC;
+}
+
+.dark-mode .main-content {
+    background-image: radial-gradient(#334155 1px, transparent 1px);
+}
+
+.dark-mode .card {
+    border: 1px solid var(--border-color);
+}
+
+.dark-mode .table {
+    color: var(--text-primary);
+}
+
+/* Fix Button Visibility in Dark Mode */
+.dark-mode .btn-primary {
+    background-color: var(--accent-color);
+    /* Use Gold/Accent for primary action in dark mode */
+    color: #0F172A;
+    /* Dark Text for contract */
+    box-shadow: none;
+    /* Simplify shadow */
+}
+
+.dark-mode .btn-primary:hover {
+    background-color: var(--accent-hover);
 }
 
 *,
@@ -389,6 +486,17 @@ h6,
     font-size: 0.85rem;
     margin-top: 0.5rem;
     font-weight: 500;
+}
+
+.welcome-card {
+    background: linear-gradient(135deg, var(--hero-gradient-start), var(--hero-gradient-end));
+    color: white;
+    padding: 3rem;
+    border-radius: var(--radius-lg);
+    margin-bottom: 3rem;
+    position: relative;
+    overflow: hidden;
+    box-shadow: var(--shadow-card);
 }
 
 /* Dashboard */
