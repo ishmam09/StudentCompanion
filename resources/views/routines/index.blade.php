@@ -54,7 +54,7 @@
                                                 </div>
                                             @endif
                                             
-                                            <form action="{{ route('class-routines.destroy', $routine->id) }}" method="POST" style="position: absolute; top: 5px; right: 5px;" onsubmit="return confirm('Remove this class?');">
+                                            <form action="{{ route('class-routines.destroy', $routine->id) }}" method="POST" style="position: absolute; top: 5px; right: 5px;">
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="submit" style="background: rgba(255,0,0,0.2); border: 1px solid rgba(255,0,0,0.3); color: #f87171; border-radius: 4px; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s;" title="Remove Class">
