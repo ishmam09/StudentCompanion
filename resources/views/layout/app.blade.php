@@ -59,10 +59,10 @@
                     </button>
                     <!-- Dropdown -->
                     <div id="notificationDropdown"
-                        style="display: none; position: absolute; right: 0; top: 120%; width: 320px; background: white; border-radius: 12px; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); overflow: hidden; z-index: 60;">
+                        style="display: none; position: absolute; right: 0; top: 120%; width: 320px; background: var(--surface); border-radius: 12px; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); overflow: hidden; z-index: 60; border: 1px solid var(--border-color);">
                         <div
                             style="padding: 1rem; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center;">
-                            <span style="font-weight: 600; color: var(--primary-color);">Notifications</span>
+                            <span style="font-weight: 600; color: var(--text-primary);">Notifications</span>
                             @if(Auth::user()->unreadNotifications->count() > 0)
                                 <a href="{{ route('notifications.mark-all-read') }}"
                                     style="font-size: 0.75rem; color: var(--accent-color); text-decoration: none;">Mark all
@@ -76,7 +76,7 @@
                                         {{ $notification->data['icon'] ?? '📢' }}
                                     </div>
                                     <div style="flex: 1;">
-                                        <div style="font-size: 0.85rem; color: var(--primary-color); line-height: 1.4;">{{ $notification->data['message'] }}</div>
+                                        <div style="font-size: 0.85rem; color: var(--text-primary); line-height: 1.4;">{{ $notification->data['message'] }}</div>
                                         <div style="font-size: 0.7rem; color: var(--text-secondary); margin-top: 0.25rem;">{{ $notification->created_at->diffForHumans() }}</div>
                                         
                                         @if(isset($notification->data['type']) && $notification->data['type'] === 'consultation_request')
@@ -179,7 +179,13 @@
                 </a>
                 @if(Auth::user()->role === 'student')
                 <a href="{{ route('deadlines.index') }}" class="nav-item {{ request()->routeIs('deadlines.*') ? 'active' : '' }}">Deadline Tracker</a>
+                <a href="{{ route('pomodoro.index') }}" class="nav-item {{ request()->routeIs('pomodoro.*') ? 'active-yellow' : '' }}">
+                    Focus Timer
+                </a>
                 @endif
+                <a href="{{ route('marketplace.index') }}" class="nav-item {{ request()->routeIs('marketplace.*') ? 'active-yellow' : '' }}">
+                    Marketplace
+                </a>
                 <a href="{{ route('todo.index') }}" class="nav-item {{ request()->routeIs('todo.*') ? 'active-yellow' : '' }}">
                 Your To Do List
                 </a>
@@ -188,14 +194,7 @@
                 <a href="{{ route('consultations.index') }}" class="nav-item {{ request()->routeIs('consultations.*') ? 'active-yellow' : '' }}">
                     Consultation Scheduler
                 </a>
-                <a href="{{ route('pomodoro.index') }}" class="nav-item {{ request()->routeIs('pomodoro.*') ? 'active-yellow' : '' }}">
-                    Focus Timer
-                </a>
                 @endif
-                <a href="{{ route('marketplace.index') }}" class="nav-item {{ request()->routeIs('marketplace.*') ? 'active-yellow' : '' }}">
-                    Marketplace
-                </a>
-                <a href="{{ route('notifications.index') }}" class="nav-item {{ request()->routeIs('notifications.*') ? 'active-yellow' : '' }}">Smart Notifications</a>
             </nav>
         </aside>
 

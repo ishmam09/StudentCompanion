@@ -600,3 +600,9 @@ h1 {
     width: 18px;
     height: 18px;
 }
+
+/* Notification Dropdown Hover Effect */
+.notification-item:hover {
+    background-color: var(--background) !important;
+    cursor: pointer;
+}
