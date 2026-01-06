@@ -18,10 +18,10 @@
                 
                 <div style="display: flex; gap: 1rem;">
                     @if(Auth::user()->role === 'student')
-                    <a href="{{ route('deadlines.create') }}" class="btn" style="background: var(--accent-color); color: var(--primary-color); border: none;">
+                    <a href="{{ route('deadlines.create') }}" class="btn" style="background: #ECC94B; color: #1a202c; font-weight: bold; border: none;">
                         + New Deadline
                     </a>
-                    <a href="{{ route('notes.index') }}" class="btn" style="background: rgba(255,255,255,0.1); color: white; backdrop-filter: blur(5px);">
+                    <a href="{{ route('notes.index') }}" class="btn" style="background: #ECC94B; color: #1a202c; font-weight: bold; border: none;">
                         View Notes
                     </a>    
                     @endif

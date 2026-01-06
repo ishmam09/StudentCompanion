@@ -212,15 +212,38 @@
         #sidebar-checkbox:checked ~ .app-container .sidebar-overlay { display: block; opacity: 1; visibility: visible; }
         
         /* CSS-only Notifications properties are already decent, just need hover */
-        .notification-wrapper:hover #notificationDropdown { display: block !important; }
+        /* JS-controlled now to fix hover closing too fast */
+        /* .notification-wrapper:hover #notificationDropdown { display: block !important; } */
 
         /* Dark Mode Class */
         body.dark-mode {
              background-color: #1a202c;
              color: #e2e8f0;
         }
-        /* ... add other dark mode overrides if they were reliant on JS adding the class ... */
-        /* Actually the previous JS just toggled 'dark-mode' on body. We will output that class via PHP. */
     </style>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const btn = document.querySelector('.notification-wrapper .btn');
+            const dropdown = document.getElementById('notificationDropdown');
+            
+            btn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                if (dropdown.style.display === 'block') {
+                    dropdown.style.display = 'none';
+                } else {
+                    dropdown.style.display = 'block';
+                }
+            });
+
+            document.addEventListener('click', function(e) {
+                if (!dropdown.contains(e.target) && !btn.contains(e.target)) {
+                    dropdown.style.display = 'none';
+                }
+            });
+            
+            // Prevent closing when clicking inside specific action links if needed, 
+            // but usually we want links to work so standard bubbling is fine.
+        });
+    </script>
 </body>
 </html>

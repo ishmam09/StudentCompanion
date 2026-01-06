@@ -201,7 +201,7 @@
                                                 <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
                                             </svg>
                                         </a>
-                                        <a href="#" class="btn"
+                                        <a href="{{ route('quiz.generate', $note->id) }}" class="btn"
                                             style="padding: 0.5rem 1rem; background: linear-gradient(135deg, #E0F2FE, #BAE6FD); color: #0284C7; border: none; font-weight: 600; font-size: 0.85rem; display: flex; align-items: center; gap: 0.5rem; text-decoration: none;">
                                             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                                 stroke-width="2">

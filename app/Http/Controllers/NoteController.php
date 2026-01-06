@@ -53,7 +53,10 @@ class NoteController extends Controller
 
     public function share(\App\Models\Note $note)
     {
-        $this->authorize('view', $note); // Ensure ownership/access
+        // Ensure ownership
+        if ($note->user_id !== Auth::id()) {
+            abort(403);
+        }
         return view('notes.share', compact('note'));
     }
 
@@ -150,10 +153,11 @@ class NoteController extends Controller
 
         $request->validate(['username' => 'required']);
 
-        $recipient = User::where('username', $request->username)->first();
+        $username = trim($request->username);
+        $recipient = User::where('username', $username)->first();
 
         if (!$recipient) {
-            return back()->with('error', 'User with username "' . $request->username . '" does not exist.');
+            return back()->with('error', 'User with username "' . $username . '" does not exist.');
         }
 
         if ($recipient->id === Auth::id()) {
@@ -175,7 +179,12 @@ class NoteController extends Controller
             'to_user_id' => $recipient->id,
         ]);
 
-        $recipient->notify(new \App\Notifications\NoteShared(Auth::user(), $note));
+        try {
+            $recipient->notify(new \App\Notifications\NoteShared(Auth::user(), $note));
+        } catch (\Exception $e) {
+            // Log error but don't fail the request
+            // \Log::error('Notification failed: ' . $e->getMessage());
+        }
 
         return back()->with('success', 'Note shared with ' . $recipient->name);
     }

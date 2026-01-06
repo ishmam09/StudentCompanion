@@ -51,6 +51,12 @@
             margin-top: 0.25rem;
             display: none;
         }
+
+        /* Hide default browser eye icon */
+        input::-ms-reveal,
+        input::-ms-clear {
+            display: none;
+        }
     </style>
 </head>
 
