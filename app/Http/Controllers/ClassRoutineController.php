@@ -61,7 +61,7 @@ class ClassRoutineController extends Controller
             'course' => $request->course,
             'day' => $request->day,
             'start_time' => $request->start_time, // saving as H:i string might need strict format for DB time column? DB is time, so H:i:s usually preferred or H:i works.
-            'end_time' => $endTime->format('H:i'), 
+            'end_time' => $endTime->format('H:i'),
             'room' => $request->room,
         ]);
 

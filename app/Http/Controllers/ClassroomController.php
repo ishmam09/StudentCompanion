@@ -9,14 +9,16 @@ use Illuminate\Support\Str;
 class ClassroomController extends Controller
 {
     // List active classes
-    public function index($courseId) {
+    public function index($courseId)
+    {
         // Keeping this for compatibility or removing if no longer used.
         // Assuming dashboard handles the main view now.
         return redirect()->route('dashboard');
     }
 
     // Teacher creates a class
-    public function store(Request $request) {
+    public function store(Request $request)
+    {
         if (auth()->user()->role !== 'teacher') {
             abort(403, 'Unauthorized access.');
         }
@@ -32,7 +34,7 @@ class ClassroomController extends Controller
         } while (VirtualClassroom::where('class_code', $class_code)->exists());
 
         $room_id = Str::slug("sc-" . $class_code . "-" . now()->timestamp);
-        
+
         $session = VirtualClassroom::create([
             'course_code' => $request->course_code,
             'teacher_id' => auth()->id(),
@@ -45,7 +47,8 @@ class ClassroomController extends Controller
     }
 
     // Student joins by code
-    public function joinByCode(Request $request) {
+    public function joinByCode(Request $request)
+    {
         $request->validate(['class_code' => 'required|string|size:5']);
 
         $classroom = VirtualClassroom::where('class_code', $request->class_code)->first();
@@ -56,46 +59,51 @@ class ClassroomController extends Controller
 
         // Persistent Enrollment: Attach user if not already attached
         $user = auth()->user();
-        if(!$user->enrolledClassrooms()->where('virtual_classroom_id', $classroom->id)->exists()) {
-             $user->enrolledClassrooms()->syncWithoutDetaching([$classroom->id]);
+        if (!$user->enrolledClassrooms()->where('virtual_classroom_id', $classroom->id)->exists()) {
+            $user->enrolledClassrooms()->syncWithoutDetaching([$classroom->id]);
         }
-        
+
         return redirect()->route('classroom.join', $classroom->room_id);
     }
 
     // Join via ID (Teacher mainly)
-    public function join($roomId) {
+    public function join($roomId)
+    {
         $session = VirtualClassroom::where('room_id', $roomId)->firstOrFail();
         return view('classroom.room', compact('session'));
     }
 
     // Student leaves the class
-    public function leave($roomId) {
+    public function leave($roomId)
+    {
         $classroom = VirtualClassroom::where('room_id', $roomId)->firstOrFail();
-        
+
         auth()->user()->enrolledClassrooms()->detach($classroom->id);
-        
+
         return redirect()->route('dashboard')->with('status', 'You have left the classroom: ' . $classroom->classroom_name);
     }
 
     // Teacher ends the class
-    public function end($roomId) {
+    public function end($roomId)
+    {
         VirtualClassroom::where('room_id', $roomId)
-                        ->where('teacher_id', auth()->id())
-                        ->update(['is_active' => false]);
+            ->where('teacher_id', auth()->id())
+            ->update(['is_active' => false]);
         return redirect()->route('dashboard')->with('status', 'Class ended successfully.');
     }
 
     // Chat functionality
-    public function getMessages($classId) {
+    public function getMessages($classId)
+    {
         $messages = \App\Models\ClassroomMessage::where('virtual_classroom_id', $classId)
-                    ->with('user:id,name')
-                    ->orderBy('created_at', 'asc')
-                    ->get();
+            ->with('user:id,name')
+            ->orderBy('created_at', 'asc')
+            ->get();
         return response()->json($messages);
     }
 
-    public function sendMessage(Request $request) {
+    public function sendMessage(Request $request)
+    {
         $request->validate([
             'virtual_classroom_id' => 'required',
             'message' => 'required|string',
@@ -111,15 +119,17 @@ class ClassroomController extends Controller
     }
 
     // Classroom Post functionality
-    public function getPosts($classId) {
+    public function getPosts($classId)
+    {
         $posts = \App\Models\ClassroomPost::where('virtual_classroom_id', $classId)
-                    ->with('user:id,name')
-                    ->orderBy('created_at', 'desc')
-                    ->get();
+            ->with('user:id,name')
+            ->orderBy('created_at', 'desc')
+            ->get();
         return response()->json($posts);
     }
 
-    public function storePost(Request $request) {
+    public function storePost(Request $request)
+    {
         $request->validate([
             'virtual_classroom_id' => 'required',
             'content' => 'required|string',

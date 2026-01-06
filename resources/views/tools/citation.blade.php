@@ -31,8 +31,9 @@
                     </div>
                 </div>
                 <div style="margin-bottom: 1.5rem;">
-                    <button type="submit" class="btn" style="padding: 0.5rem 1rem; font-size: 0.9rem;">Update
-                        Configuration</button>
+                    <button type="submit" class="btn" style="padding: 0.5rem 1rem; font-size: 0.9rem;">
+                        Update Configuration
+                    </button>
                 </div>
             </form>
 
@@ -128,7 +129,7 @@
                 <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 1rem;">
                     <label class="form-label" style="color: var(--accent-color);">Generated Citation</label>
                 </div>
-                <div
+                <div id="citationText"
                     style="font-family: 'Times New Roman', serif; font-size: 1.1rem; line-height: 1.6; padding: 1rem; background: var(--background); border-radius: var(--radius-sm); border: 1px solid var(--border-color);">
                     {!! $result !!}
                 </div>

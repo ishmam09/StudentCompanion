@@ -70,7 +70,7 @@ class NoteController extends Controller
             'parent_id' => $request->parent_id,
         ]);
 
-        return back()->with('success', 'Folder created successfully.');
+        return redirect()->route('notes.index', ['folderId' => $request->parent_id])->with('success', 'Folder created successfully.');
     }
 
     public function storeNote(Request $request)
@@ -100,7 +100,7 @@ class NoteController extends Controller
             'file_type' => $extension,
         ]);
 
-        return back()->with('success', 'File uploaded successfully.');
+        return redirect()->route('notes.index', ['folderId' => $request->folder_id])->with('success', 'File uploaded successfully.');
     }
 
     public function download(Note $note)
