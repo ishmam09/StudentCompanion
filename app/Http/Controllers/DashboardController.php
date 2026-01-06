@@ -22,7 +22,7 @@ class DashboardController extends Controller
             ->where('status', 'pending')
             ->where('due_date', '<=', now()->addHours(24))
             ->count();
-        
+
 
         $activeClasses = VirtualClassroom::where('is_active', true)
             ->with('teacher')
@@ -30,10 +30,17 @@ class DashboardController extends Controller
 
         // Updated compact to include 'activeClasses'
         return view('dashboard', compact(
-            'pendingTasksCount', 
-            'upcomingDeadlinesCount', 
+            'pendingTasksCount',
+            'upcomingDeadlinesCount',
             'activeClasses'
         ));
-        
+
+    }
+
+    public function toggleTheme()
+    {
+        $theme = session('theme', 'light') === 'dark' ? 'light' : 'dark';
+        session(['theme' => $theme]);
+        return back();
     }
 }
