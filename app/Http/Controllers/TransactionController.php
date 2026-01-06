@@ -35,16 +35,8 @@ class TransactionController extends Controller
         }
 
         $transactions = $query->paginate(20);
-        // Assuming categories are related to User directly now, or still Student? 
-        // Based on model inspection, User has no direct 'categories' method yet explicitly seen in User.php but TransactionController used it.
-        // Assuming User has Many Categories (common pattern). 
-        // If not, we might need to check if Category has user_id.
-        // Let's assume Category is global or per user. If per user:
-        // $categories = auth()->user()->categories; 
-        // NOTE: User model didn't show 'categories' relation. Let me check Category model later if error.
-        // For now I'll use Category::all() if it's global, or assume relation exists/will be added.
-        // Reverting to what was there but using user():
-        $categories = \App\Models\Category::all(); // Fallback if no relation, or add relation to User.
+
+        $categories = \App\Models\Category::all(); 
 
         return view('expense.index', compact('transactions', 'categories'));
     }
@@ -147,10 +139,7 @@ class TransactionController extends Controller
             ->take(5)
             ->get();
 
-        // Budget status - Assuming Budget model exists and has user_id
-        // Since I didn't verify Budget model fully, wrapping in try/catch or simple check?
-        // Code used $user->budgets(). User model didn't have budgets().
-        // I'll leave it as is but assume I need to add relations to User model.
+
         $budgets = \App\Models\Budget::where('user_id', $user->id)
             ->where('is_active', true)
             ->with('category')
