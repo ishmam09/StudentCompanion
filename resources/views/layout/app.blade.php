@@ -159,9 +159,11 @@
                 </a>
                 @endif
                 
+                @if(Auth::user()->role === 'student')
                 <a href="{{route('cgpa')}}" class="nav-item {{request()->routeIs('cgpa') ? 'active' : ''}}">
                     CGPA Calculator
                 </a>
+                @endif
 
                 <a href="{{route('expense')}}" class="nav-item {{request()->routeIs('expense') ? 'active' : ''}}">
                     Expense Tracker
